@@ -40,12 +40,19 @@ def handle_member(member_id):
         return jsonify(member), 200
      else:
           return jsonify({"err_msg": "Member not found"}), 404
-     
+
 @app.route('/add-member', methods=['POST'])
-def handle_add():
-    member = request.get_json()
-    jackson_family.add_member(member)
-    return 'New member created', 201
+def add_member():
+    member_data = request.get_json()
+    required_fields = ['first_name', 'age', 'lucky_numbers']
+    for field in required_fields:
+        if field not in member_data:
+            return jsonify({'error': f'Missing required field: {field}'}), 400
+    # Agregar el miembro a la lista de miembros
+    jackson_family.add_member(member_data)
+    return 'New member created', 200
+    
+
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def handle_delete(member_id):
